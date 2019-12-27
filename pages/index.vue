@@ -1,80 +1,92 @@
 <template>
-  <v-layout column justify-center align-center>
-    <v-flex xs12 sm8 md6>
-      <div class="text-center">
-        <logo />
-        <vuetify-logo />
-      </div>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>
-            Vuetify is a progressive Material Design component framework for
-            Vue.js. It was designed to empower developers to create amazing
-            applications.
+  <v-app id="inspire">
+    <v-content style="background:rgb(247,247,247)">
+      <div v-if="!isMobile" class="mainIndexContain">
+        <div v-for="(item, i) in listdata" id="pc" :key="i" :style="{'background':(i/2===0)?'#fff':'rgb(247,247,247)'}">
+          <p class="mainTitle">
+            {{ item.name }}
           </p>
-          <p>
-            For more information on Vuetify, check out the
-            <a href="https://vuetifyjs.com" target="_blank"> documentation </a>.
-          </p>
-          <p>
-            If you have questions, please join the official
-            <a href="https://chat.vuetifyjs.com/" target="_blank" title="chat">
-              discord </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github
-            <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              title="contribute"
-            >
-              issue board </a>.
-          </p>
-          <p>
-            Thank you for developing with Vuetify and I look forward to bringing
-            more exciting features in the future.
-          </p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
+          <div class="appContain">
+            <card v-for="(el, k) in item.appInfos" :key="k" :app-info="el" />
           </div>
-          <hr class="my-3">
-          <a href="https://nuxtjs.org/" target="_blank">
-            Nuxt Documentation
-          </a>
-          <br>
-          <a href="https://github.com/nuxt/nuxt.js" target="_blank">
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="primary" nuxt to="/inspire">
-            Continue
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-flex>
-  </v-layout>
+        </div>
+      </div>
+      <!-- 移动端 -->
+      <div v-if="isMobile" class="mobileContain">
+        <div v-for="(item, i) in listdata" id="mobile" :key="i">
+          <p class="mainTitle">
+            {{ item.name }}
+          </p>
+          <div class="appContain">
+            <mobile-card v-for="(el, k) in item.appInfos" :key="k" :app-info="el" />
+          </div>
+        </div>
+      </div>
+    </v-content>
+  </v-app>
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
-import VuetifyLogo from '~/components/VuetifyLogo.vue'
-
+import Card from '~/components/Card.vue'
+import MobileCard from '~/components/MobileCard.vue'
 export default {
   components: {
-    Logo,
-    VuetifyLogo
+    Card, MobileCard
   },
   asyncData (context) {
-    // return context.$axios
-    //   .get(`https://my-api/posts/${context.params.id}`)
-    //   .then((res) => {
-    //     return { title: res.data.title }
-    //   })
+    return context.$axios.get(`/api/Category/GetAppCategoryInfos`).then((res) => {
+      return { listdata: res.data }
+    })
+  },
+  data () {
+    return {
+      isMobile: this.$store.state.app.isMobile,
+      listdata: null,
+      drawer: null
+    }
+  },
+  computed: {
+    bgStyle () {
+
+    }
   }
 }
 </script>
+<style lang="scss" scoped>
+.mobileContain {
+  width: 100%;
+  overflow: hidden;
+  .mainTitle {
+    padding: 1.48rem 0 1.36rem 1.28rem;
+    font-size: 1.2rem;
+    margin-top: 1.2rem;
+    margin-bottom: 0;
+    color: #292a2f;
+    font-weight: 440;
+    text-align: center;
+  }
+  .appContain {
+    padding: 0 1.72rem 0.84rem 1.4rem;
+  }
+}
+.mainIndexContain {
+  width: 100%;
+  padding: 0 3.8rem 1.125rem 3.8rem;
+  .mainTitle {
+    font-size: 0.45rem;
+    color: #292a2f;
+    margin: 1.25rem 0 0.36rem 0;
+    position: relative;
+    font-weight: 600;
+    width: 100%;
+    text-align: center;
+  }
+  .appContain {
+    width: 100%;
+    margin-top: 0.503rem;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+}
+</style>

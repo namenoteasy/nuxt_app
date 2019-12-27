@@ -1,7 +1,11 @@
 import colors from 'vuetify/es5/util/colors'
 
+const ENV_API = require('./env')[process.env.NODE_ENV].ENV_API
 export default {
   mode: 'universal',
+  env: {
+    baseUrl: ENV_API
+  },
   /*
    ** Headers of the page
    */
@@ -36,7 +40,7 @@ export default {
    */
   buildModules: [
     // Doc: https://github.com/nuxt-community/eslint-module
-    '@nuxtjs/eslint-module',
+    // '@nuxtjs/eslint-module',
     '@nuxtjs/vuetify'
   ],
   /*
